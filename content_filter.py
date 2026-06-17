@@ -1595,6 +1595,24 @@ def _resolve_visual(
     return image
 
 
+def _coerce_strictness_level(value, default: int = 2) -> int:
+    """Parse strictness from INT/STRING widgets (ComfyDeploy may send '')."""
+    if value is None or value == "":
+        return default
+    if isinstance(value, bool):
+        return default
+    if isinstance(value, (int, float)):
+        return max(1, min(3, int(value)))
+    if isinstance(value, str):
+        stripped = value.strip()
+        if not stripped:
+            return default
+        if stripped.isdigit():
+            return max(1, min(3, int(stripped)))
+        return _strictness_to_int(stripped)
+    return default
+
+
 class DrugSafetyFilter:
     """
     Drug-focused Florence-2 safety filter for the MSN Safety Gate workflow.
@@ -1622,12 +1640,10 @@ class DrugSafetyFilter:
                     },
                 ),
                 "strictness": (
-                    "INT",
+                    "STRING",
                     {
-                        "default": 2,
-                        "min": 1,
-                        "max": 3,
-                        "step": 1,
+                        "default": "2",
+                        "multiline": False,
                         "tooltip": "1=hard drugs only | 2=+cannabis/pills/weapons | 3=+visual hints, pipe/pill",
                     },
                 ),
@@ -1669,7 +1685,7 @@ class DrugSafetyFilter:
         self,
         image: torch.Tensor,
         caption: str,
-        strictness: int = 2,
+        strictness: str = "2",
         extra_banned_keywords: str = "",
         bypass_scan: bool = False,
         metadata_flag: str = "",
@@ -1682,7 +1698,7 @@ class DrugSafetyFilter:
         elif len(captions) > frame_count:
             captions = captions[:frame_count]
 
-        level = max(1, min(3, int(strictness)))
+        level = _coerce_strictness_level(strictness, default=2)
 
         if bypass_scan or _scanner_bypass_enabled():
             blocked, matched = False, []
