@@ -277,7 +277,6 @@ class MSNModerationGateway:
 
         return {
             "ui": ui_payload,
-            "moderation_output": moderation_output_json,
             "result": (moderation_output_json,),
         }
 

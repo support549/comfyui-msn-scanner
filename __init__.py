@@ -6,6 +6,10 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.insert(0, CURRENT_DIR)
 
+from comfydeploy_compat import install_validate_prompt_compat
+
+install_validate_prompt_compat()
+
 from msn_nodes import (
     NODE_CLASS_MAPPINGS as GATEWAY_CLASS_MAPPINGS,
     NODE_DISPLAY_NAME_MAPPINGS as GATEWAY_DISPLAY_MAPPINGS,

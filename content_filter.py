@@ -1725,7 +1725,6 @@ class DrugSafetyFilter:
 
         return {
             "ui": {"text": [ui_text]},
-            "moderation_output": moderation_output_json,
             "result": (is_safe, reason, safe_image, blocked_image, moderation_output_json),
         }
 
