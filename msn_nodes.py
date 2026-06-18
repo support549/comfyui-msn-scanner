@@ -13,7 +13,9 @@ from content_filter import (
 import os
 import sys
 
-_HASH_PKG = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "msn-perceptual-hash")
+from hash_paths import resolve_perceptual_hash_dir
+
+_HASH_PKG = resolve_perceptual_hash_dir()
 if _HASH_PKG not in sys.path:
     sys.path.insert(0, _HASH_PKG)
 
